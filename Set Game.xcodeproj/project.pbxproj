@@ -18,6 +18,7 @@
 		3F2BDA13251478D100DCA0D9 /* CardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F2BDA12251478D100DCA0D9 /* CardView.swift */; };
 		3F710594251519F700895130 /* SetGameViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F710593251519F700895130 /* SetGameViewModel.swift */; };
 		3F71059725151DF700895130 /* Array+Identifiable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F71059625151DF700895130 /* Array+Identifiable.swift */; };
+		3F71059A25166BC700895130 /* SetShapeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F71059925166BC700895130 /* SetShapeView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -34,6 +35,7 @@
 		3F2BDA12251478D100DCA0D9 /* CardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardView.swift; sourceTree = "<group>"; };
 		3F710593251519F700895130 /* SetGameViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetGameViewModel.swift; sourceTree = "<group>"; };
 		3F71059625151DF700895130 /* Array+Identifiable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Array+Identifiable.swift"; sourceTree = "<group>"; };
+		3F71059925166BC700895130 /* SetShapeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetShapeView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -108,6 +110,7 @@
 				3F2BDA082514445600DCA0D9 /* Cardify.swift */,
 				3F2BDA12251478D100DCA0D9 /* CardView.swift */,
 				3F2BDA0B2514452E00DCA0D9 /* SetShape.swift */,
+				3F71059925166BC700895130 /* SetShapeView.swift */,
 				3F2BD9EB25143F8600DCA0D9 /* Set_GameApp.swift */,
 				3F2BD9ED25143F8600DCA0D9 /* SetGameView.swift */,
 			);
@@ -200,6 +203,7 @@
 				3F2BDA012514409900DCA0D9 /* SetGame.swift in Sources */,
 				3F2BDA13251478D100DCA0D9 /* CardView.swift in Sources */,
 				3F2BDA0F2514784500DCA0D9 /* Symbol+Extension.swift in Sources */,
+				3F71059A25166BC700895130 /* SetShapeView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
