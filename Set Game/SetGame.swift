@@ -96,10 +96,10 @@ struct SetGame {
         let c2 = visibleCards[indices[1]]
         let c3 = visibleCards[indices[2]]
 
-        return dimensionIsSet(c1.shape, c2.shape, c3.shape)
-            && dimensionIsSet(c1.color, c2.color, c3.color)
-            && dimensionIsSet(c1.count, c2.count, c3.count)
-            && dimensionIsSet(c1.pattern, c2.pattern, c3.pattern)
+        return dimensionIsASet(c1.shape, c2.shape, c3.shape)
+            && dimensionIsASet(c1.color, c2.color, c3.color)
+            && dimensionIsASet(c1.count, c2.count, c3.count)
+            && dimensionIsASet(c1.pattern, c2.pattern, c3.pattern)
     }
 
     mutating func markHint(indices: [Int]) {
@@ -152,7 +152,7 @@ struct SetGame {
         }
     }
 
-    private func dimensionIsSet<E: Equatable>(_ c1: E, _ c2: E, _ c3: E) -> Bool {
+    private func dimensionIsASet<E: Equatable>(_ c1: E, _ c2: E, _ c3: E) -> Bool {
         c1 == c2 && c2 == c3 ||
         c1 != c2 && c2 != c3 && c1 != c3
     }

@@ -44,12 +44,11 @@ struct Cardify: ViewModifier {
 
 struct Cardify_Previews: PreviewProvider {
     static var previews: some View {
-        Capsule()
-            .padding(75)
-            .foregroundColor(.red)
-            .modifier(Cardify(selectionState: .matched))
-            .aspectRatio(2/3, contentMode: .fit)
-            .padding(50)
+        let card = SetGame.Card(shape: .squiggle, pattern: .striped, color: .purple, count: 3, id: 1)
+
+        return CardView(card: card)
+            .foregroundColor(.black)
+            .padding()
     }
 }
 
