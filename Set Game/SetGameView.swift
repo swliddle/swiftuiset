@@ -21,20 +21,18 @@ struct SetGameView: View {
             rows = (setGame.visibleCards.count + columns - 1) / columns
         }
 
-        return Array(repeating: GridItem(.flexible()), count: columns)
+        return Array(repeating: GridItem(.flexible(), spacing: 5), count: columns)
     }
 
     var body: some View {
         VStack {
             GeometryReader { geometry in
                 ScrollView {
-                    LazyVGrid(columns: columns(for: geometry.size)) {
+                    LazyVGrid(columns: columns(for: geometry.size), spacing: 5) {
                         ForEach(setGame.visibleCards) { card in
                             CardView(card: card)
                                 .onTapGesture {
-                                    withAnimation(.easeInOut) {
-                                        setGame.choose(card)
-                                    }
+                                    setGame.choose(card)
                                 }
                         }
                     }
@@ -46,7 +44,7 @@ struct SetGameView: View {
 
             HStack {
                 Button("Deal 3") {
-                    setGame.dealThreeMoreCards()
+                    setGame.dealCards(quantity: 3)
                 }
                 .disabled(setGame.hiddenCardCount <= 0)
                 Spacer()
@@ -54,9 +52,16 @@ struct SetGameView: View {
                     setGame.resetGame()
                 }
                 Spacer()
-                Text("\(setGame.setCount) Sets")
+                Button("Hint") {
+                    setGame.showHint()
+                }
+                Spacer()
+                Text("\(setGame.setCount) Set\(setGame.setCount == 1 ? "" : "s")")
             }
             .padding()
+        }
+        .onAppear {
+            setGame.dealCards(quantity: 12)
         }
     }
 }

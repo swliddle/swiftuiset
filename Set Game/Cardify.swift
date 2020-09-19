@@ -29,7 +29,9 @@ struct Cardify: ViewModifier {
                     ? Color(red: 0.6, green: 0.9, blue: 0.6)
                     : selectionState == .mismatched
                         ? Color(red: 1.0, green: 0.6, blue: 0.6)
-                        : Color.white
+                        : selectionState == .hinted
+                        ? Color(red: 1.0, green: 0.8, blue: 1.0)
+                            : Color.white
         )
         RoundedRectangle(cornerRadius: radius).stroke()
         content

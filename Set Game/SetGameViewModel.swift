@@ -27,14 +27,50 @@ class SetGameViewModel: ObservableObject {
     // MARK: - Intents
 
     func choose(_ card: SetGame.Card) {
-        game.choose(card)
+        withAnimation(.easeInOut(duration: animationDuration)) {
+            game.choose(card)
+        }
     }
 
-    func dealThreeMoreCards() {
-        game.dealThreeCards()
+    func dealCards(quantity: Int) {
+        for i in 0..<quantity {
+            withAnimation(Animation.easeInOut(duration: animationDuration).delay(Double(i) * dealingAnimationDuration)) {
+                game.dealOneCard()
+            }
+        }
+    }
+
+    func showHint() {
+        let cards = visibleCards
+
+        for i in cards.indices {
+            for j in cards.indices {
+                if j != i {
+                    for k in cards.indices {
+                        if k != i && k != j && game.isASet(indices: [i, j, k]) {
+                            withAnimation(.easeIn(duration: animationDuration)) {
+                                game.markHint(indices: [i, j, k])
+                            }
+
+                            return
+                        }
+                    }
+                }
+            }
+        }
     }
 
     func resetGame() {
-        game = SetGame()
+        withAnimation {
+            game = SetGame()
+        }
+
+        dealCards(quantity: initialDeckSize)
     }
+
+    // MARK: - Constants
+
+    private let animationDuration = 0.4
+    private let dealingAnimationDuration = 0.2
+    private let initialDeckSize = 12
 }

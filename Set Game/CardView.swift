@@ -18,6 +18,7 @@ struct CardView: View {
         }
         .cardify(selectionState: card.selectionState)
         .aspectRatio(3/2, contentMode: .fit)
+        .transition(AnyTransition.offset(randomLocationOffScreen))
     }
 
     private func setBody(for size: CGSize) -> some View {
@@ -55,6 +56,28 @@ struct CardView: View {
 
     private func padding(for size: CGSize) -> CGFloat {
         scaledValue(0.125, for: size)
+    }
+
+    private var randomLocationOffScreen : CGSize {
+        let r1 = CGFloat.random(in: -500...500)
+        let r2 = CGFloat.random(in: -500...500)
+        let size = UIScreen.main.bounds.size
+        var x: CGFloat
+        var y: CGFloat
+
+        if r1 < 0 {
+            x = r1 - size.width
+        } else {
+            x = size.width * 2 + r1
+        }
+
+        if r2 < 0 {
+            y = r2 - size.width
+        } else {
+            y = size.width * 2 + r2
+        }
+
+        return CGSize(width: x, height: y)
     }
 
     private func scaledValue(_ value: CGFloat, for size: CGSize) -> CGFloat {

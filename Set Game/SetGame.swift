@@ -12,6 +12,7 @@ enum SelectionState {
     case selected
     case matched
     case mismatched
+    case hinted
 
     mutating func toggle() {
         self = self == .none ? .selected : .none
@@ -53,17 +54,15 @@ struct SetGame {
         }
 
         cards.shuffle()
-
-        for _ in 0..<4 {
-            dealThreeCards()
-        }
     }
 
     mutating func choose(_ card: Card) {
         if let chosenIndex = visibleCards.firstIndex(matching: card) {
+            clearHint()
+
             switch visibleCards[chosenIndex].selectionState {
-            case .none:
-                visibleCards[chosenIndex].selectionState.toggle()
+            case .none, .hinted:
+                visibleCards[chosenIndex].selectionState = .selected
                 checkForSet(with: chosenIndex)
             case .selected:
                 visibleCards[chosenIndex].selectionState.toggle()
@@ -75,12 +74,39 @@ struct SetGame {
         }
     }
 
+    mutating func dealOneCard() {
+        if let card = cards.first {
+            visibleCards.append(card)
+            cards.remove(at: 0)
+        }
+    }
+
     mutating func dealThreeCards() {
         for _ in 0..<3 {
-            if let card = cards.first {
-                visibleCards.append(card)
-                cards.remove(at: 0)
-            }
+            dealOneCard()
+        }
+    }
+
+    func isASet(indices: [Int]) -> Bool {
+        if indices.count != 3 {
+            return false
+        }
+
+        let c1 = visibleCards[indices[0]]
+        let c2 = visibleCards[indices[1]]
+        let c3 = visibleCards[indices[2]]
+
+        return dimensionIsSet(c1.shape, c2.shape, c3.shape)
+            && dimensionIsSet(c1.color, c2.color, c3.color)
+            && dimensionIsSet(c1.count, c2.count, c3.count)
+            && dimensionIsSet(c1.pattern, c2.pattern, c3.pattern)
+    }
+
+    mutating func markHint(indices: [Int]) {
+        deselectAll()
+
+        indices.forEach {
+            visibleCards[$0].selectionState = .hinted
         }
     }
 
@@ -112,6 +138,14 @@ struct SetGame {
         }
     }
 
+    private mutating func clearHint() {
+        visibleCards.indices.forEach { index in
+            if visibleCards[index].selectionState == .hinted {
+                visibleCards[index].selectionState = .none
+            }
+        }
+    }
+
     private mutating func deselectAll() {
         visibleCards.indices.forEach { index in
             visibleCards[index].selectionState = .none
@@ -121,21 +155,6 @@ struct SetGame {
     private func dimensionIsSet<E: Equatable>(_ c1: E, _ c2: E, _ c3: E) -> Bool {
         c1 == c2 && c2 == c3 ||
         c1 != c2 && c2 != c3 && c1 != c3
-    }
-
-    private func isASet(indices: [Int]) -> Bool {
-        if indices.count != 3 {
-            return false
-        }
-
-        let c1 = visibleCards[indices[0]]
-        let c2 = visibleCards[indices[1]]
-        let c3 = visibleCards[indices[2]]
-
-        return dimensionIsSet(c1.shape, c2.shape, c3.shape)
-            && dimensionIsSet(c1.color, c2.color, c3.color)
-            && dimensionIsSet(c1.count, c2.count, c3.count)
-            && dimensionIsSet(c1.pattern, c2.pattern, c3.pattern)
     }
 
     private mutating func replaceCard(at index: Int) {
