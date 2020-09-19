@@ -22,23 +22,28 @@ struct Cardify: ViewModifier {
     private func cardBody(for size: CGSize, content: Content) -> some View {
         let radius = cornerRadius(for: size)
 
-        RoundedRectangle(cornerRadius: radius).fill(
-            selectionState == .selected
-                ? Color.yellow
-                : selectionState == .matched
-                    ? Color(red: 0.6, green: 0.9, blue: 0.6)
-                    : selectionState == .mismatched
-                        ? Color(red: 1.0, green: 0.6, blue: 0.6)
-                        : selectionState == .hinted
-                        ? Color(red: 1.0, green: 0.8, blue: 1.0)
-                            : Color.white
-        )
+        RoundedRectangle(cornerRadius: radius).fill(fillColor(for: selectionState))
         RoundedRectangle(cornerRadius: radius).stroke()
         content
     }
 
     private func cornerRadius(for size: CGSize) -> CGFloat {
         size.width * 0.05
+    }
+
+    private func fillColor(for state: SelectionState) -> Color {
+        switch state {
+        case .selected:
+            return Color.yellow
+        case .matched:
+            return Color(red: 0.6, green: 0.9, blue: 0.6)
+        case .mismatched:
+            return Color(red: 1.0, green: 0.6, blue: 0.6)
+        case .hinted:
+            return Color(red: 1.0, green: 0.8, blue: 1.0)
+        case .none:
+            return Color.white
+        }
     }
 }
 

@@ -43,7 +43,7 @@ struct CardView: View {
     // MARK: - Drawing constants
 
     private func lineWidth(for size: CGSize) -> CGFloat {
-        scaledValue(0.02, for: size)
+        scaledValue(0.03, for: size)
     }
 
     private func offset(for size: CGSize) -> CGFloat {
