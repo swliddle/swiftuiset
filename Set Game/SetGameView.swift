@@ -40,6 +40,16 @@ struct SetGameView: View {
                 }
             }
 
+            if setGame.hiddenCardCount <= 0
+                && setGame.setCount > 0
+                && !setGame.isSetAvailable {
+                Spacer()
+                Text("No more sets.\nGame over!")
+                    .multilineTextAlignment(.center)
+                    .font(.largeTitle)
+                    .padding(50)
+            }
+
             Spacer()
 
             HStack {
@@ -47,14 +57,18 @@ struct SetGameView: View {
                     setGame.dealCards(quantity: 3)
                 }
                 .disabled(setGame.hiddenCardCount <= 0)
+
                 Spacer()
                 Button("New Game") {
                     setGame.resetGame()
                 }
+
                 Spacer()
                 Button("Hint") {
                     setGame.showHint()
                 }
+                .disabled(!setGame.isSetAvailable)
+
                 Spacer()
                 Text("\(setGame.setCount) Set\(setGame.setCount == 1 ? "" : "s")")
             }

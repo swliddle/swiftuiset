@@ -16,6 +16,14 @@ class SetGameViewModel: ObservableObject {
         game.cards.count
     }
 
+    var isSetAvailable: Bool {
+        if let _ = firstAvailableSet() {
+            return true
+        }
+
+        return false
+    }
+
     var setCount: Int {
         game.setCount
     }
@@ -41,21 +49,26 @@ class SetGameViewModel: ObservableObject {
     }
 
     func showHint() {
-        let cards = visibleCards
+        let matchedIndices = visibleCards.indices.filter { visibleCards[$0].selectionState == .matched }
 
-        for i in cards.indices {
-            for j in cards.indices {
-                if j != i {
-                    for k in cards.indices {
-                        if k != i && k != j && game.isASet(indices: [i, j, k]) {
-                            withAnimation(.easeIn(duration: animationDuration)) {
-                                game.markHint(indices: [i, j, k])
-                            }
+        if matchedIndices.count > 0 {
+            withAnimation {
+                game.choose(visibleCards[matchedIndices[0]])
+            }
+        }
 
-                            return
-                        }
-                    }
+        if var availableSet = firstAvailableSet() {
+            // Randomly decide whether to show all cards in the hint
+            if Bool.random() {
+                if Bool.random() {
+                    availableSet.remove(at: availableSet.count - 1)
                 }
+
+                availableSet.remove(at: availableSet.count - 1)
+            }
+
+            withAnimation(.easeIn(duration: animationDuration)) {
+                game.markHint(indices: availableSet)
             }
         }
     }
@@ -66,6 +79,26 @@ class SetGameViewModel: ObservableObject {
         }
 
         dealCards(quantity: initialDeckSize)
+    }
+
+    // MARK: - Helpers
+
+    private func firstAvailableSet() -> [Int]? {
+        let cards = visibleCards
+
+        for i in cards.indices {
+            for j in cards.indices {
+                if j != i {
+                    for k in cards.indices {
+                        if k != i && k != j && game.isASet(indices: [i, j, k]) {
+                            return [i, j, k]
+                        }
+                    }
+                }
+            }
+        }
+
+        return nil
     }
 
     // MARK: - Constants
