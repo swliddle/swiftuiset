@@ -57,18 +57,9 @@ class SetGameViewModel: ObservableObject {
             }
         }
 
-        if var availableSet = firstAvailableSet() {
-            // Randomly decide whether to show all cards in the hint
-            if Bool.random() {
-                if Bool.random() {
-                    availableSet.remove(at: availableSet.count - 1)
-                }
-
-                availableSet.remove(at: availableSet.count - 1)
-            }
-
+        if let availableSet = firstAvailableSet() {
             withAnimation(.easeIn(duration: animationDuration)) {
-                game.markHint(indices: availableSet)
+                game.markHint(indices: [availableSet[0]])
             }
         }
     }

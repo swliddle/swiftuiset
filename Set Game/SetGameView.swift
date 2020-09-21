@@ -27,17 +27,17 @@ struct SetGameView: View {
     var body: some View {
         VStack {
             GeometryReader { geometry in
-                ScrollView {
-                    LazyVGrid(columns: columns(for: geometry.size), spacing: 5) {
-                        ForEach(setGame.visibleCards) { card in
-                            CardView(card: card)
-                                .onTapGesture {
+                LazyVGrid(columns: columns(for: geometry.size), spacing: 5) {
+                    ForEach(setGame.visibleCards) { card in
+                        CardView(card: card)
+                            .onTapGesture {
+                                withAnimation {
                                     setGame.choose(card)
                                 }
-                        }
+                            }
                     }
-                    .padding([.leading, .trailing], 5)
                 }
+                .padding([.leading, .trailing], 5)
             }
 
             if setGame.hiddenCardCount <= 0
