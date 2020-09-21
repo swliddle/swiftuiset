@@ -9,8 +9,25 @@ import SwiftUI
 
 class SetGameViewModel: ObservableObject {
     @Published private var game = SetGame()
+    @Published var bonusTimeLeft: TimeInterval = 0
+    @Published var timeElapsed: TimeInterval = 0
+
+    var timer: Timer {
+        Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { timer in
+            let timeElapsed = Date().timeIntervalSince(self.game.timeOfLastSet)
+
+            if let maxBonus = self.game.timeBreaksForMatch.last, timeElapsed < maxBonus {
+                self.bonusTimeLeft = maxBonus - timeElapsed
+            } else {
+                self.bonusTimeLeft = 0
+            }
+
+            self.timeElapsed = Date().timeIntervalSince(self.game.timeStarted)
+        }
+    }
 
     // MARK: - Model access
+
 
     var hiddenCardCount: Int {
         game.cards.count

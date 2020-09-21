@@ -10,20 +10,6 @@ import SwiftUI
 struct SetGameView: View {
     @ObservedObject var setGame: SetGameViewModel
 
-    func columns(for size: CGSize) -> [GridItem] {
-        var columns = 3
-        var width = size.width / CGFloat(columns)
-        var rows = (setGame.visibleCards.count + columns - 1) / columns
-
-        while 2 * width / 3 * CGFloat(rows) > size.height {
-            columns += 1
-            width = size.width / CGFloat(columns)
-            rows = (setGame.visibleCards.count + columns - 1) / columns
-        }
-
-        return Array(repeating: GridItem(.flexible(), spacing: 5), count: columns)
-    }
-
     var body: some View {
         VStack {
             GeometryReader { geometry in
@@ -44,7 +30,7 @@ struct SetGameView: View {
                 && setGame.setCount > 0
                 && !setGame.isSetAvailable {
                 Spacer()
-                Text("No more sets.\nGame over!")
+                Text("No more sets. Game over!")
                     .multilineTextAlignment(.center)
                     .font(.largeTitle)
                     .padding(50)
@@ -52,30 +38,107 @@ struct SetGameView: View {
 
             Spacer()
 
-            HStack {
-                Button("Deal 3") {
-                    setGame.dealCards(quantity: 3)
-                }
-                .disabled(setGame.hiddenCardCount <= 0)
-
-                Spacer()
-                Button("New Game") {
-                    setGame.resetGame()
-                }
-
-                Spacer()
-                Button("Hint") {
-                    setGame.showHint()
-                }
-                .disabled(!setGame.isSetAvailable)
-
-                Spacer()
-                Text("Score: \(setGame.score)")
-            }
-            .padding()
+            ControlsAndScoreView(setGame: setGame)
         }
         .onAppear {
             setGame.dealCards(quantity: 12)
+        }
+    }
+
+    private func columns(for size: CGSize) -> [GridItem] {
+        Array(repeating: GridItem(.flexible(), spacing: 5),
+              count: columnCount(for: size))
+    }
+
+    private func columnCount(for size: CGSize) -> Int {
+        var columns = 2
+        var spacingWidth: CGFloat
+        var width: CGFloat
+        var rows: Int
+
+        repeat {
+            // Starting with a minimum of 3 columns, see how many
+            // rows will be needed.  Keep increasing the column
+            // count until the cards all fit in the space available.
+            columns += 1
+            spacingWidth = CGFloat((columns - 1) * 5)
+            width = (size.width - spacingWidth) / CGFloat(columns)
+            rows = (setGame.visibleCards.count + columns - 1) / columns
+        } while heightRequired(for: rows, of: width) > size.height
+
+        return columns
+    }
+
+    private func heightRequired(for rows: Int, of width: CGFloat) -> CGFloat {
+        let spacingHeight = CGFloat((rows - 1) * 5)
+
+        return 2 * width / 3 * CGFloat(rows) + spacingHeight
+    }
+}
+
+struct ControlsAndScoreView: View {
+    @ObservedObject var setGame: SetGameViewModel
+    @Environment(\.horizontalSizeClass) var sizeClass
+
+    var body: some View {
+        if sizeClass == .compact {
+            VStack {
+                HStack {
+                    buttonsView()
+                }
+                .padding()
+
+                HStack {
+                    scoreDetailsView()
+                }
+                .padding([.leading, .trailing])
+            }
+        } else {
+            HStack {
+                buttonsView()
+                Spacer()
+                scoreDetailsView()
+            }
+            .padding([.leading, .trailing, .bottom])
+        }
+    }
+
+    @ViewBuilder
+    private func buttonsView() -> some View {
+        Button("Deal 3") {
+            setGame.dealCards(quantity: 3)
+        }
+        .disabled(setGame.hiddenCardCount <= 0)
+
+        Spacer()
+        Button("New Game") {
+            setGame.resetGame()
+        }
+
+        Spacer()
+        Button("Hint") {
+            setGame.showHint()
+        }
+        .disabled(!setGame.isSetAvailable)
+
+        Spacer()
+        Text("Score: \(setGame.score)")
+    }
+
+    @ViewBuilder
+    private func scoreDetailsView() -> some View {
+        Text("Elapsed: \(setGame.timeElapsed.compactString)")
+        Spacer()
+        Text("Bonus time: \(setGame.bonusTimeLeft.compactString)")
+            .onAppear() {
+                let _ = setGame.timer
+            }
+        Spacer()
+
+        if setGame.setCount == 1 {
+            Text("1 Set")
+        } else {
+            Text("\(setGame.setCount) Sets")
         }
     }
 }

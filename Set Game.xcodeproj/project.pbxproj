@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		3F12859825194D480074E1CD /* TimeInterval+CompactString.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F12859725194D480074E1CD /* TimeInterval+CompactString.swift */; };
 		3F2BD9EC25143F8600DCA0D9 /* Set_GameApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F2BD9EB25143F8600DCA0D9 /* Set_GameApp.swift */; };
 		3F2BD9EE25143F8600DCA0D9 /* SetGameView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F2BD9ED25143F8600DCA0D9 /* SetGameView.swift */; };
 		3F2BD9F025143F8A00DCA0D9 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3F2BD9EF25143F8A00DCA0D9 /* Assets.xcassets */; };
@@ -22,6 +23,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		3F12859725194D480074E1CD /* TimeInterval+CompactString.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TimeInterval+CompactString.swift"; sourceTree = "<group>"; };
 		3F2BD9E825143F8600DCA0D9 /* Set Game.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Set Game.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		3F2BD9EB25143F8600DCA0D9 /* Set_GameApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Set_GameApp.swift; sourceTree = "<group>"; };
 		3F2BD9ED25143F8600DCA0D9 /* SetGameView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetGameView.swift; sourceTree = "<group>"; };
@@ -92,6 +94,7 @@
 			children = (
 				3F71059625151DF700895130 /* Array+Identifiable.swift */,
 				3F2BDA0E2514784500DCA0D9 /* Symbol+Extension.swift */,
+				3F12859725194D480074E1CD /* TimeInterval+CompactString.swift */,
 			);
 			name = Utility;
 			sourceTree = "<group>";
@@ -195,6 +198,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				3F2BDA0C2514452E00DCA0D9 /* SetShape.swift in Sources */,
+				3F12859825194D480074E1CD /* TimeInterval+CompactString.swift in Sources */,
 				3F2BD9EE25143F8600DCA0D9 /* SetGameView.swift in Sources */,
 				3F2BD9EC25143F8600DCA0D9 /* Set_GameApp.swift in Sources */,
 				3F710594251519F700895130 /* SetGameViewModel.swift in Sources */,

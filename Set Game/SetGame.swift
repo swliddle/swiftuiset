@@ -39,11 +39,12 @@ enum SymbolColor: CaseIterable {
 
 struct SetGame {
     private let cardsPerSet = Card.maxSymbolCount
-    private let matchScoreBase = 28
     private let desiredVisibleCardsCount = 12
+    private let matchScoreBase = 28
+    private let maxScoreValueOfSet = 27
     private let mismatchPenalty = 10
     private let hintPenalty = 10
-    private let timeBreaksForMatch = [15.0, 30.0, 60.0, 90.0, 120.0]
+    let timeBreaksForMatch = [15.0, 30.0, 60.0, 90.0, 120.0]
     private let timeBonusFactor = 5
 
     var cards = [Card]()
@@ -192,14 +193,17 @@ struct SetGame {
     }
 
     private mutating func scoreANewSet() {
+        let scoreValueOfSet = matchScoreBase - (visibleCards.count / cardsPerSet)
+
         setCount += 1
-        score += matchScoreBase - (visibleCards.count / cardsPerSet)
+        score += scoreValueOfSet
 
         let elapsedTime = Date().timeIntervalSince(timeOfLastSet)
 
         for index in timeBreaksForMatch.indices {
             if elapsedTime < timeBreaksForMatch[index] {
                 score += (timeBreaksForMatch.count - index) * timeBonusFactor
+                    * scoreValueOfSet / maxScoreValueOfSet
                 break
             }
         }
