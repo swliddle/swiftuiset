@@ -70,7 +70,7 @@ struct SetGameView: View {
                 .disabled(!setGame.isSetAvailable)
 
                 Spacer()
-                Text("\(setGame.setCount) Set\(setGame.setCount == 1 ? "" : "s")")
+                Text("Score: \(setGame.score)")
             }
             .padding()
         }

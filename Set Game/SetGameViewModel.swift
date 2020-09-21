@@ -24,6 +24,10 @@ class SetGameViewModel: ObservableObject {
         return false
     }
 
+    var score: Int {
+        return game.score
+    }
+
     var setCount: Int {
         game.setCount
     }

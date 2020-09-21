@@ -38,9 +38,21 @@ enum SymbolColor: CaseIterable {
 }
 
 struct SetGame {
+    private let cardsPerSet = Card.maxSymbolCount
+    private let matchScoreBase = 28
+    private let desiredVisibleCardsCount = 12
+    private let mismatchPenalty = 10
+    private let hintPenalty = 10
+    private let timeBreaksForMatch = [15.0, 30.0, 60.0, 90.0, 120.0]
+    private let timeBonusFactor = 5
+
     var cards = [Card]()
     var visibleCards = [Card]()
+    var hintCount = 0
+    var score = 0
     var setCount = 0
+    var timeStarted = Date()
+    var timeOfLastSet = Date()
 
     init() {
         for shape in SymbolShape.allCases {
@@ -82,13 +94,13 @@ struct SetGame {
     }
 
     mutating func dealThreeCards() {
-        for _ in 0..<3 {
+        for _ in 0..<cardsPerSet {
             dealOneCard()
         }
     }
 
     func isASet(indices: [Int]) -> Bool {
-        if indices.count != 3 {
+        if indices.count != cardsPerSet {
             return false
         }
 
@@ -108,6 +120,9 @@ struct SetGame {
         indices.forEach {
             visibleCards[$0].selectionState = .hinted
         }
+
+        score -= hintPenalty
+        hintCount += 1
     }
 
     // MARK: - Private helpers
@@ -123,14 +138,16 @@ struct SetGame {
             }
         } else if matchedIndices.count > 0 {
             replaceCurrentSet()
-        } else if selectedIndices.count >= 3 {
+        } else if selectedIndices.count >= cardsPerSet {
             if isASet(indices: selectedIndices) {
-                setCount += 1
+                scoreANewSet()
 
                 selectedIndices.forEach { index in
                     visibleCards[index].selectionState = .matched
                 }
             } else {
+                score -= mismatchPenalty
+
                 selectedIndices.forEach { index in
                     visibleCards[index].selectionState = .mismatched
                 }
@@ -158,7 +175,7 @@ struct SetGame {
     }
 
     private mutating func replaceCard(at index: Int) {
-        if let card = cards.first, visibleCards.count <= 12 {
+        if let card = cards.first, visibleCards.count <= desiredVisibleCardsCount {
             visibleCards[index] = card
             cards.remove(at: 0)
         } else {
@@ -172,6 +189,22 @@ struct SetGame {
                 replaceCard(at: index)
             }
         }
+    }
+
+    private mutating func scoreANewSet() {
+        setCount += 1
+        score += matchScoreBase - (visibleCards.count / cardsPerSet)
+
+        let elapsedTime = Date().timeIntervalSince(timeOfLastSet)
+
+        for index in timeBreaksForMatch.indices {
+            if elapsedTime < timeBreaksForMatch[index] {
+                score += (timeBreaksForMatch.count - index) * timeBonusFactor
+                break
+            }
+        }
+
+        timeOfLastSet = Date()
     }
 
     // MARK: - Nested Card
