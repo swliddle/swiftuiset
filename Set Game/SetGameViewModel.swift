@@ -57,9 +57,10 @@ class SetGameViewModel: ObservableObject {
             }
         }
 
-        if let availableSet = firstAvailableSet() {
+        if let availableSet = firstAvailableSet(),
+           let randomIndex = availableSet.randomElement() {
             withAnimation(.easeIn(duration: animationDuration)) {
-                game.markHint(indices: [availableSet[0]])
+                game.markHint(indices: [randomIndex])
             }
         }
     }
