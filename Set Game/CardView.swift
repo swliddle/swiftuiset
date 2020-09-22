@@ -59,23 +59,11 @@ struct CardView: View {
     }
 
     private var randomLocationOffScreen : CGSize {
-        let r1 = CGFloat.random(in: -500...500)
-        let r2 = CGFloat.random(in: -500...500)
-        let size = UIScreen.main.bounds.size
-        var x: CGFloat
-        var y: CGFloat
-
-        if r1 < 0 {
-            x = r1 - size.width
-        } else {
-            x = size.width * 2 + r1
-        }
-
-        if r2 < 0 {
-            y = r2 - size.width
-        } else {
-            y = size.width * 2 + r2
-        }
+        let angle = Angle.degrees(Double.random(in: 0..<360)).radians
+        let radius =  max(UIScreen.main.bounds.size.width,
+                          UIScreen.main.bounds.size.height)
+        let x = CGFloat(cos(angle)) * radius * 1.5
+        let y = CGFloat(sin(angle)) * radius * 1.5
 
         return CGSize(width: x, height: y)
     }
