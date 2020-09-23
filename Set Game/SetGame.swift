@@ -39,6 +39,7 @@ enum SymbolColor: CaseIterable {
 
 struct SetGame {
     private let cardsPerSet = Card.maxSymbolCount
+    private let dealPenalty = 10
     private let desiredVisibleCardsCount = 12
     private let matchScoreBase = 28
     private let maxScoreValueOfSet = 27
@@ -67,6 +68,10 @@ struct SetGame {
         }
 
         cards.shuffle()
+    }
+
+    mutating func assessDealPenalty() {
+        score -= dealPenalty
     }
 
     mutating func choose(_ card: Card) {

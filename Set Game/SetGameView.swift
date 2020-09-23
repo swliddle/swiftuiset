@@ -127,12 +127,17 @@ struct ControlsAndScoreView: View {
 
     @ViewBuilder
     private func scoreDetailsView() -> some View {
-        Text("Elapsed: \(setGame.timeElapsed.compactString)")
-        Spacer()
-        Text("Bonus time: \(setGame.bonusTimeLeft.compactString)")
-            .onAppear() {
-                let _ = setGame.timer
-            }
+        if setGame.gameIsOver {
+            Text("High score: \(setGame.highScore)")
+        } else {
+            Text("Elapsed: \(setGame.timeElapsed.compactString)")
+            Spacer()
+            Text("Bonus time: \(setGame.bonusTimeLeft.compactString)")
+                .onAppear() {
+                    let _ = setGame.timer
+                }
+        }
+
         Spacer()
 
         if setGame.setCount == 1 {

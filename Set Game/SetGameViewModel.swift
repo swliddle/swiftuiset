@@ -8,8 +8,14 @@
 import SwiftUI
 
 class SetGameViewModel: ObservableObject {
+    struct Constant {
+        static let cardsPerDeal = 3
+        static let keyHighScore = "highscore"
+    }
+
     @Published private var game = SetGame()
     @Published var bonusTimeLeft: TimeInterval = 0
+    @Published var highScore = UserDefaults.standard.integer(forKey: Constant.keyHighScore)
     @Published var timeElapsed: TimeInterval = 0
 
     var timer: Timer {
@@ -28,6 +34,9 @@ class SetGameViewModel: ObservableObject {
 
     // MARK: - Model access
 
+    var gameIsOver: Bool {
+        hiddenCardCount <= 0 && setCount > 0 && !isSetAvailable
+    }
 
     var hiddenCardCount: Int {
         game.cards.count
@@ -59,11 +68,30 @@ class SetGameViewModel: ObservableObject {
         withAnimation(.easeInOut(duration: animationDuration)) {
             game.choose(card)
         }
+
+        dealCardsToAllowSet()
+
+        let currentScore = score
+
+        if currentScore > highScore {
+            UserDefaults.standard.set(score,
+                                      forKey: Constant.keyHighScore)
+            highScore = currentScore
+        }
     }
 
-    func dealCards(quantity: Int) {
+    func dealCards(quantity: Int, with delayCount: Int = 0) {
+        if visibleCards.count >= initialDeckSize && isSetAvailable {
+            game.assessDealPenalty()
+        }
+
         for i in 0..<quantity {
-            withAnimation(Animation.easeInOut(duration: animationDuration).delay(Double(i) * dealingAnimationDuration)) {
+            withAnimation(
+                Animation.easeInOut(
+                    duration: animationDuration
+                )
+                .delay(Double(i + delayCount) * dealingAnimationDuration)
+            ) {
                 game.dealOneCard()
             }
         }
@@ -92,9 +120,16 @@ class SetGameViewModel: ObservableObject {
         }
 
         dealCards(quantity: initialDeckSize)
+        dealCardsToAllowSet(delayCount: initialDeckSize)
     }
 
     // MARK: - Helpers
+
+    private func dealCardsToAllowSet(delayCount: Int = 0) {
+        while !isSetAvailable && hiddenCardCount > 0 {
+            dealCards(quantity: Constant.cardsPerDeal, with: delayCount)
+        }
+    }
 
     private func firstAvailableSet() -> [Int]? {
         let cards = visibleCards
