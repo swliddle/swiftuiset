@@ -134,6 +134,12 @@ class SetGameViewModel: ObservableObject {
     private func firstAvailableSet() -> [Int]? {
         let cards = visibleCards
 
+        // Just a note of caution here: this is a four-level loop.
+        // It could get pretty expensive to evaluate if the number of
+        // cards grows large.  3 to the 4th power is only 81, but 12
+        // to the 4th is 20,736 and 81 to the 4th is 43,046,721.  So
+        // you want to be a little careful with what you choose to do
+        // in a four-level loop.
         for i in cards.indices {
             for j in cards.indices {
                 if j != i {
