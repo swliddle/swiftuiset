@@ -16,21 +16,20 @@ class SetGameViewModel: ObservableObject {
     @Published private var game = SetGame()
     @Published var bonusTimeLeft: TimeInterval = 0
     @Published var highScore = UserDefaults.standard.integer(forKey: Constant.keyHighScore)
-    @Published var timeElapsed: TimeInterval = 0
+
+    var timeElapsed: TimeInterval {
+        game.timeElapsed
+    }
 
     var soundPlayer = SoundPlayer()
 
     var timer: Timer {
         Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { timer in
-            let timeElapsed = Date().timeIntervalSince(self.game.timeOfLastSet)
-
-            if let maxBonus = self.game.timeBreaksForMatch.last, timeElapsed < maxBonus {
-                self.bonusTimeLeft = maxBonus - timeElapsed
+            if let maxBonus = self.game.timeBreaksForMatch.last, self.timeElapsed < maxBonus {
+                self.bonusTimeLeft = maxBonus - self.timeElapsed
             } else {
                 self.bonusTimeLeft = 0
             }
-
-            self.timeElapsed = Date().timeIntervalSince(self.game.timeStarted)
         }
     }
 
@@ -119,6 +118,15 @@ class SetGameViewModel: ObservableObject {
         }
     }
 
+    func resetGame() {
+        withAnimation {
+            game = SetGame()
+        }
+
+        dealCards(quantity: initialDeckSize)
+        dealCardsToAllowSet(delayCount: initialDeckSize)
+    }
+
     func showHint() {
         let matchedIndices = visibleCards.indices.filter { visibleCards[$0].selectionState == .matched }
 
@@ -138,13 +146,12 @@ class SetGameViewModel: ObservableObject {
         }
     }
 
-    func resetGame() {
-        withAnimation {
-            game = SetGame()
-        }
+    func startTimer() {
+        game.startTimer()
+    }
 
-        dealCards(quantity: initialDeckSize)
-        dealCardsToAllowSet(delayCount: initialDeckSize)
+    func stopTimer() {
+        game.stopTimer()
     }
 
     // MARK: - Helpers

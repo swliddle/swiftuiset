@@ -44,6 +44,13 @@ struct SetGameView: View {
         }
         .onAppear {
             setGame.dealCards(quantity: 12)
+            setGame.startTimer()
+        }
+        .onReceive(NotificationCenter.default.publisher(for: UIApplication.willEnterForegroundNotification)) { _ in
+            setGame.startTimer()
+        }
+        .onReceive(NotificationCenter.default.publisher(for: UIApplication.willResignActiveNotification)) { _ in
+            setGame.stopTimer()
         }
     }
 

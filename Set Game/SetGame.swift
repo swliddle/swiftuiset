@@ -55,8 +55,13 @@ struct SetGame {
     var setCount = 0
     var isMarkedSetVisible = false
     var isMismatchedSetVisible = false
-    var timeStarted = Date()
+    var lastTimeStarted: Date?
+    var pastTimeElapsed: TimeInterval = 0
     var timeOfLastSet = Date()
+
+    var timeElapsed: TimeInterval {
+        pastTimeElapsed - (lastTimeStarted?.timeIntervalSince(Date()) ?? 0)
+    }
 
     init() {
         for shape in SymbolShape.allCases {
@@ -134,6 +139,19 @@ struct SetGame {
 
         score -= hintPenalty
         hintCount += 1
+    }
+
+    mutating func startTimer() {
+        if lastTimeStarted == nil {
+            lastTimeStarted = Date()
+        }
+    }
+
+    mutating func stopTimer() {
+        if let lastTimeStarted = lastTimeStarted {
+            pastTimeElapsed += Date().timeIntervalSince(lastTimeStarted)
+            self.lastTimeStarted = nil
+        }
     }
 
     // MARK: - Private helpers
