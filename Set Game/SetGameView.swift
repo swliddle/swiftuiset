@@ -14,20 +14,6 @@ struct SetGameView: View {
 
     var body: some View {
         VStack {
-            GeometryReader { geometry in
-                LazyVGrid(columns: columns(for: geometry.size), spacing: 5) {
-                    ForEach(setGame.visibleCards) { card in
-                        CardView(card: card)
-                            .onTapGesture {
-                                withAnimation {
-                                    setGame.choose(card)
-                                }
-                            }
-                    }
-                }
-                .padding([.leading, .trailing], 5)
-            }
-
             if setGame.hiddenCardCount <= 0
                 && setGame.setCount > 0
                 && !setGame.isSetAvailable {
@@ -36,9 +22,24 @@ struct SetGameView: View {
                     .multilineTextAlignment(.center)
                     .font(.largeTitle)
                     .padding(50)
-            }
+                Spacer()
+            } else {
+                GeometryReader { geometry in
+                    LazyVGrid(columns: columns(for: geometry.size), spacing: 5) {
+                        ForEach(setGame.visibleCards) { card in
+                            CardView(card: card)
+                                .onTapGesture {
+                                    withAnimation {
+                                        setGame.choose(card)
+                                    }
+                                }
+                        }
+                    }
+                    .padding([.leading, .trailing], 5)
+                }
 
-            Spacer()
+                Spacer()
+            }
 
             ControlsAndScoreView(setGame: setGame)
         }
@@ -122,6 +123,7 @@ struct ControlsAndScoreView: View {
         Spacer()
         Button("New Game") {
             setGame.resetGame()
+            setGame.startTimer()
         }
 
         Spacer()
