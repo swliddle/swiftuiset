@@ -53,6 +53,8 @@ struct SetGame {
     var hintCount = 0
     var score = 0
     var setCount = 0
+    var isMarkedSetVisible = false
+    var isMismatchedSetVisible = false
     var timeStarted = Date()
     var timeOfLastSet = Date()
 
@@ -75,6 +77,9 @@ struct SetGame {
     }
 
     mutating func choose(_ card: Card) {
+        isMarkedSetVisible = false
+        isMismatchedSetVisible = false
+
         if let chosenIndex = visibleCards.firstIndex(matching: card) {
             clearHint()
 
@@ -153,6 +158,7 @@ struct SetGame {
                 }
             } else {
                 score -= mismatchPenalty
+                isMismatchedSetVisible = true
 
                 selectedIndices.forEach { index in
                     visibleCards[index].selectionState = .mismatched
@@ -214,6 +220,7 @@ struct SetGame {
         }
 
         timeOfLastSet = Date()
+        isMarkedSetVisible = true
     }
 
     // MARK: - Nested Card

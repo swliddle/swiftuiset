@@ -15,7 +15,7 @@ extension TimeInterval {
         let minutes = (intervalInSeconds % 3600) / 60
         let seconds = (intervalInSeconds % 3600) % 60
 
-        var string = hours > 0 ? "\(hours):" : ""
+        var string = hours > 0 ? "\(hours)" : ""
 
         if minutes > 0 && hours > 0 {
             string = "\(string):\(leftPadZero(minutes))"

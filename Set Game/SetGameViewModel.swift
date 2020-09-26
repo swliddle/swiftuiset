@@ -18,6 +18,8 @@ class SetGameViewModel: ObservableObject {
     @Published var highScore = UserDefaults.standard.integer(forKey: Constant.keyHighScore)
     @Published var timeElapsed: TimeInterval = 0
 
+    var soundPlayer = SoundPlayer()
+
     var timer: Timer {
         Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { timer in
             let timeElapsed = Date().timeIntervalSince(self.game.timeOfLastSet)
@@ -69,6 +71,16 @@ class SetGameViewModel: ObservableObject {
             game.choose(card)
         }
 
+        SoundPlayer.play(.pop)
+
+        if game.isMismatchedSetVisible {
+            SoundPlayer.play(.wrong)
+        }
+
+        if game.isMarkedSetVisible {
+            SoundPlayer.play(.success)
+        }
+
         dealCardsToAllowSet()
 
         let currentScore = score
@@ -77,6 +89,10 @@ class SetGameViewModel: ObservableObject {
             UserDefaults.standard.set(score,
                                       forKey: Constant.keyHighScore)
             highScore = currentScore
+        }
+
+        if hiddenCardCount <= 0 && setCount > 0 && !isSetAvailable {
+            SoundPlayer.play(.gameOver)
         }
     }
 
@@ -95,6 +111,12 @@ class SetGameViewModel: ObservableObject {
                 game.dealOneCard()
             }
         }
+
+        if quantity >= initialDeckSize {
+            SoundPlayer.play(.deal12)
+        } else if quantity >= 3 {
+            SoundPlayer.play(.deal3)
+        }
     }
 
     func showHint() {
@@ -105,6 +127,8 @@ class SetGameViewModel: ObservableObject {
                 game.choose(visibleCards[matchedIndices[0]])
             }
         }
+
+        SoundPlayer.play(.magicWand)
 
         if let availableSet = firstAvailableSet(),
            let randomIndex = availableSet.randomElement() {
@@ -158,6 +182,6 @@ class SetGameViewModel: ObservableObject {
     // MARK: - Constants
 
     private let animationDuration = 0.4
-    private let dealingAnimationDuration = 0.2
+    private let dealingAnimationDuration = 0.33
     private let initialDeckSize = 12
 }

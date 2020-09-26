@@ -10,6 +10,8 @@ import SwiftUI
 struct SetGameView: View {
     @ObservedObject var setGame: SetGameViewModel
 
+    @State private var players = [SoundPlayer]()
+
     var body: some View {
         VStack {
             GeometryReader { geometry in
