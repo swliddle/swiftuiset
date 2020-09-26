@@ -128,7 +128,7 @@ class SetGameViewModel: ObservableObject {
             }
         }
 
-        SoundPlayer.play(.magicWand)
+        SoundPlayer.play(.hint)
 
         if let availableSet = firstAvailableSet(),
            let randomIndex = availableSet.randomElement() {

@@ -13,7 +13,7 @@ enum SoundEffect: CaseIterable {
     case deal12
     case flip
     case gameOver
-    case magicWand
+    case hint
     case pop
     case replace3
     case success
@@ -29,14 +29,14 @@ enum SoundEffect: CaseIterable {
             return "84322__splashdust__flipcard.m4a"
         case .gameOver:
             return "325413__satchdev__cute-pixie-says-game-over.m4a"
-        case .magicWand:
-            return "magic_wand.m4a"
+        case .hint:
+            return "511484__mattleschuck__success-bell.m4a"
         case .pop:
             return "328118__greenvwbeetle__pop-7.m4a"
         case .replace3:
-            return ""
+            return "deal_three_cards.m4a"
         case .success:
-            return "hand_bells_cluster.m4a"
+            return "magic_wand.m4a"
         case .wrong:
             return "483598__raclure__wrong.m4a"
         }
@@ -67,8 +67,11 @@ struct SoundPlayer {
             preparePlayers()
         }
 
-        DispatchQueue.global().async {
-            if let player = players[soundEffect.soundName] {
+        if let player = players[soundEffect.soundName] {
+            if player.isPlaying {
+                player.stop()
+                DispatchQueue.global().asyncAfter(deadline: .now() + 0.05, execute: { player.play() })
+            } else {
                 player.play()
             }
         }
