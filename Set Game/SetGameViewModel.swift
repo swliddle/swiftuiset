@@ -25,8 +25,10 @@ class SetGameViewModel: ObservableObject {
 
     var timer: Timer {
         Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { timer in
-            if let maxBonus = self.game.timeBreaksForMatch.last, self.timeElapsed < maxBonus {
-                self.bonusTimeLeft = maxBonus - self.timeElapsed
+            let timeSinceLastSet = Date().timeIntervalSince(self.game.timeOfLastSet)
+
+            if let maxBonus = self.game.timeBreaksForMatch.last, timeSinceLastSet < maxBonus {
+                self.bonusTimeLeft = maxBonus - timeSinceLastSet
             } else {
                 self.bonusTimeLeft = 0
             }
