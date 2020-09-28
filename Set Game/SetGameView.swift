@@ -35,7 +35,7 @@ struct SetGameView: View {
                                 }
                         }
                     }
-                    .padding([.leading, .trailing], 5)
+                    .padding([.leading, .trailing, .top], 5)
                 }
 
                 Spacer()
