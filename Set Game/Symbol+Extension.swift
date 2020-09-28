@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-extension SymbolColor {
+extension Card.SymbolColor {
     var color: Color {
         switch self {
         case .green:
@@ -20,7 +20,7 @@ extension SymbolColor {
     }
 }
 
-extension SymbolPattern {
+extension Card.SymbolPattern {
     var opacity: Double {
         switch self {
         case .open:

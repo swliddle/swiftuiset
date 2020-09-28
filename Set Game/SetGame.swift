@@ -7,37 +7,10 @@
 
 import Foundation
 
-enum SelectionState {
-    case none
-    case selected
-    case matched
-    case mismatched
-    case hinted
-
-    mutating func toggle() {
-        self = self == .none ? .selected : .none
-    }
-}
-
-enum SymbolShape: CaseIterable {
-    case capsule
-    case diamond
-    case squiggle
-}
-
-enum SymbolPattern: CaseIterable {
-    case open
-    case striped
-    case solid
-}
-
-enum SymbolColor: CaseIterable {
-    case green
-    case purple
-    case red
-}
-
 struct SetGame {
+
+    // MARK: - Constants
+
     private let cardsPerSet = Card.maxSymbolCount
     private let dealPenalty = 10
     private let desiredVisibleCardsCount = 12
@@ -45,28 +18,35 @@ struct SetGame {
     private let maxScoreValueOfSet = 27
     private let mismatchPenalty = 10
     private let hintPenalty = 10
-    let timeBreaksForMatch = [15.0, 30.0, 60.0, 90.0, 120.0]
+    let timeBreaksForMatch = [15.0, 30.0, 45.0, 60.0, 75.0]
     private let timeBonusFactor = 5
 
+    // MARK: - Properties
+
     var cards = [Card]()
-    var visibleCards = [Card]()
     var hintCount = 0
-    var score = 0
-    var setCount = 0
     var isMarkedSetVisible = false
     var isMismatchedSetVisible = false
     var lastTimeStarted: Date?
     var pastTimeElapsed: TimeInterval = 0
+    var score = 0
+    var setCount = 0
     var timeOfLastSet = Date()
+    var unnecessaryDealCount = 0
+    var visibleCards = [Card]()
+
+    // MARK: - Computed properties
 
     var timeElapsed: TimeInterval {
         pastTimeElapsed - (lastTimeStarted?.timeIntervalSince(Date()) ?? 0)
     }
 
+    // MARK: - Initialization
+
     init() {
-        for shape in SymbolShape.allCases {
-            for shade in SymbolPattern.allCases {
-                for color in SymbolColor.allCases {
+        for shape in Card.SymbolShape.allCases {
+            for shade in Card.SymbolPattern.allCases {
+                for color in Card.SymbolColor.allCases {
                     for count in Card.minSymbolCount...Card.maxSymbolCount {
                         cards.append(Card(shape: shape, pattern: shade, color: color, count: count))
                     }
@@ -77,7 +57,10 @@ struct SetGame {
         cards.shuffle()
     }
 
+    // MARK: - Methods
+
     mutating func assessDealPenalty() {
+        unnecessaryDealCount += 1
         score -= dealPenalty
     }
 
@@ -115,7 +98,7 @@ struct SetGame {
         }
     }
 
-    func isASet(indices: [Int]) -> Bool {
+    func isValidSet(indices: [Int]) -> Bool {
         if indices.count != cardsPerSet {
             return false
         }
@@ -124,10 +107,10 @@ struct SetGame {
         let c2 = visibleCards[indices[1]]
         let c3 = visibleCards[indices[2]]
 
-        return dimensionIsASet(c1.shape, c2.shape, c3.shape)
-            && dimensionIsASet(c1.color, c2.color, c3.color)
-            && dimensionIsASet(c1.count, c2.count, c3.count)
-            && dimensionIsASet(c1.pattern, c2.pattern, c3.pattern)
+        return dimensionIsSetCandidate(c1.shape, c2.shape, c3.shape)
+            && dimensionIsSetCandidate(c1.color, c2.color, c3.color)
+            && dimensionIsSetCandidate(c1.count, c2.count, c3.count)
+            && dimensionIsSetCandidate(c1.pattern, c2.pattern, c3.pattern)
     }
 
     mutating func markHint(indices: [Int]) {
@@ -135,9 +118,9 @@ struct SetGame {
 
         indices.forEach {
             visibleCards[$0].selectionState = .hinted
+            score -= hintPenalty
         }
 
-        score -= hintPenalty
         hintCount += 1
     }
 
@@ -157,9 +140,9 @@ struct SetGame {
     // MARK: - Private helpers
 
     private mutating func checkForSet(with chosenIndex: Int) {
-        let matchedIndices = visibleCards.indices.filter { visibleCards[$0].selectionState == .matched }
-        let mismatchedIndices = visibleCards.indices.filter { visibleCards[$0].selectionState == .mismatched }
-        let selectedIndices = visibleCards.indices.filter { visibleCards[$0].selectionState == .selected }
+        let matchedIndices = visibleCards.indicesMatching(selectionState: .matched)
+        let mismatchedIndices = visibleCards.indicesMatching(selectionState: .mismatched)
+        let selectedIndices = visibleCards.indicesMatching(selectionState: .selected)
 
         if mismatchedIndices.count > 0 {
             mismatchedIndices.forEach { index in
@@ -168,19 +151,10 @@ struct SetGame {
         } else if matchedIndices.count > 0 {
             replaceCurrentSet()
         } else if selectedIndices.count >= cardsPerSet {
-            if isASet(indices: selectedIndices) {
-                scoreANewSet()
-
-                selectedIndices.forEach { index in
-                    visibleCards[index].selectionState = .matched
-                }
+            if isValidSet(indices: selectedIndices) {
+                scoreNewSet(marking: selectedIndices)
             } else {
-                score -= mismatchPenalty
-                isMismatchedSetVisible = true
-
-                selectedIndices.forEach { index in
-                    visibleCards[index].selectionState = .mismatched
-                }
+                scoreMismatch(marking: selectedIndices)
             }
         }
     }
@@ -199,9 +173,21 @@ struct SetGame {
         }
     }
 
-    private func dimensionIsASet<E: Equatable>(_ c1: E, _ c2: E, _ c3: E) -> Bool {
+    private func dimensionIsSetCandidate<E: Equatable>(_ c1: E, _ c2: E, _ c3: E) -> Bool {
         c1 == c2 && c2 == c3 ||
         c1 != c2 && c2 != c3 && c1 != c3
+    }
+
+    private mutating func markCards(_ indices: [Int], _ state: Card.SelectionState) {
+        indices.forEach { index in
+            visibleCards[index].selectionState = state
+        }
+    }
+
+    private mutating func markSetVisible(using indices: [Int]) {
+        timeOfLastSet = Date()
+        isMarkedSetVisible = true
+        markCards(indices, .matched)
     }
 
     private mutating func replaceCard(at index: Int) {
@@ -214,6 +200,7 @@ struct SetGame {
     }
 
     private mutating func replaceCurrentSet() {
+        // We need to traverse the array backwards because we are modifying it
         for index in stride(from: visibleCards.count - 1, through: 0, by: -1) {
             if visibleCards[index].selectionState == .matched {
                 replaceCard(at: index)
@@ -221,7 +208,13 @@ struct SetGame {
         }
     }
 
-    private mutating func scoreANewSet() {
+    private mutating func scoreMismatch(marking indices: [Int]) {
+        score -= mismatchPenalty
+        isMismatchedSetVisible = true
+        markCards(indices, .mismatched)
+    }
+
+    private mutating func scoreNewSet(marking indices: [Int]) {
         let scoreValueOfSet = matchScoreBase - (visibleCards.count / cardsPerSet)
 
         setCount += 1
@@ -237,29 +230,6 @@ struct SetGame {
             }
         }
 
-        timeOfLastSet = Date()
-        isMarkedSetVisible = true
-    }
-
-    // MARK: - Nested Card
-
-    struct Card: Identifiable {
-        var selectionState = SelectionState.none
-        var shape: SymbolShape
-        var pattern: SymbolPattern
-        var color: SymbolColor
-        var count: Int
-        var id = nextIdValue()
-
-        static let minSymbolCount = 1
-        static let maxSymbolCount = 3
-
-        private static var nextId = 0
-
-        private static func nextIdValue() -> Int {
-            nextId += 1
-
-            return nextId
-        }
+        markSetVisible(using: indices)
     }
 }

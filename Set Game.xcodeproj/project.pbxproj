@@ -11,9 +11,10 @@
 		3F1FE7F5251EADF8008C20E9 /* hand_bells_cluster.m4a in Resources */ = {isa = PBXBuildFile; fileRef = 3F1FE7F4251EADF8008C20E9 /* hand_bells_cluster.m4a */; };
 		3F1FE7FB251ED975008C20E9 /* 483598__raclure__wrong.m4a in Resources */ = {isa = PBXBuildFile; fileRef = 3F1FE7FA251ED975008C20E9 /* 483598__raclure__wrong.m4a */; };
 		3F1FE7FE251EDAF6008C20E9 /* 325413__satchdev__cute-pixie-says-game-over.m4a in Resources */ = {isa = PBXBuildFile; fileRef = 3F1FE7FD251EDAF6008C20E9 /* 325413__satchdev__cute-pixie-says-game-over.m4a */; };
-		3F1FE802251FA3C0008C20E9 /* AnimationCompletionObserverModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F1FE801251FA3C0008C20E9 /* AnimationCompletionObserverModifier.swift */; };
 		3F1FE807251FCE29008C20E9 /* 511484__mattleschuck__success-bell.m4a in Resources */ = {isa = PBXBuildFile; fileRef = 3F1FE806251FCE29008C20E9 /* 511484__mattleschuck__success-bell.m4a */; };
 		3F1FE810251FD263008C20E9 /* magic_wand.m4a in Resources */ = {isa = PBXBuildFile; fileRef = 3F1FE80F251FD263008C20E9 /* magic_wand.m4a */; };
+		3F1FE81325223784008C20E9 /* Card.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F1FE81225223784008C20E9 /* Card.swift */; };
+		3F1FE81625223D79008C20E9 /* Array+Card.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F1FE81525223D79008C20E9 /* Array+Card.swift */; };
 		3F2BD9EC25143F8600DCA0D9 /* Set_GameApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F2BD9EB25143F8600DCA0D9 /* Set_GameApp.swift */; };
 		3F2BD9EE25143F8600DCA0D9 /* SetGameView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F2BD9ED25143F8600DCA0D9 /* SetGameView.swift */; };
 		3F2BD9F025143F8A00DCA0D9 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3F2BD9EF25143F8A00DCA0D9 /* Assets.xcassets */; };
@@ -38,9 +39,10 @@
 		3F1FE7F4251EADF8008C20E9 /* hand_bells_cluster.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; path = hand_bells_cluster.m4a; sourceTree = "<group>"; };
 		3F1FE7FA251ED975008C20E9 /* 483598__raclure__wrong.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; path = 483598__raclure__wrong.m4a; sourceTree = "<group>"; };
 		3F1FE7FD251EDAF6008C20E9 /* 325413__satchdev__cute-pixie-says-game-over.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; path = "325413__satchdev__cute-pixie-says-game-over.m4a"; sourceTree = "<group>"; };
-		3F1FE801251FA3C0008C20E9 /* AnimationCompletionObserverModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnimationCompletionObserverModifier.swift; sourceTree = "<group>"; };
 		3F1FE806251FCE29008C20E9 /* 511484__mattleschuck__success-bell.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; path = "511484__mattleschuck__success-bell.m4a"; sourceTree = "<group>"; };
 		3F1FE80F251FD263008C20E9 /* magic_wand.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; path = magic_wand.m4a; sourceTree = "<group>"; };
+		3F1FE81225223784008C20E9 /* Card.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Card.swift; sourceTree = "<group>"; };
+		3F1FE81525223D79008C20E9 /* Array+Card.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Array+Card.swift"; sourceTree = "<group>"; };
 		3F2BD9E825143F8600DCA0D9 /* Set Game.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Set Game.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		3F2BD9EB25143F8600DCA0D9 /* Set_GameApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Set_GameApp.swift; sourceTree = "<group>"; };
 		3F2BD9ED25143F8600DCA0D9 /* SetGameView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetGameView.swift; sourceTree = "<group>"; };
@@ -115,7 +117,7 @@
 		3F2BD9FC2514402B00DCA0D9 /* Utility */ = {
 			isa = PBXGroup;
 			children = (
-				3F1FE801251FA3C0008C20E9 /* AnimationCompletionObserverModifier.swift */,
+				3F1FE81525223D79008C20E9 /* Array+Card.swift */,
 				3F71059625151DF700895130 /* Array+Identifiable.swift */,
 				3F768A14251D22A5003DA5B2 /* SoundPlayer.swift */,
 				3F2BDA0E2514784500DCA0D9 /* Symbol+Extension.swift */,
@@ -148,6 +150,7 @@
 		3F2BD9FF2514406600DCA0D9 /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				3F1FE81225223784008C20E9 /* Card.swift */,
 				3F2BDA002514409900DCA0D9 /* SetGame.swift */,
 			);
 			name = Model;
@@ -248,14 +251,15 @@
 			buildActionMask = 2147483647;
 			files = (
 				3F2BDA0C2514452E00DCA0D9 /* SetShape.swift in Sources */,
+				3F1FE81625223D79008C20E9 /* Array+Card.swift in Sources */,
 				3F12859825194D480074E1CD /* TimeInterval+CompactString.swift in Sources */,
 				3F2BD9EE25143F8600DCA0D9 /* SetGameView.swift in Sources */,
 				3F2BD9EC25143F8600DCA0D9 /* Set_GameApp.swift in Sources */,
 				3F710594251519F700895130 /* SetGameViewModel.swift in Sources */,
 				3F2BDA092514445600DCA0D9 /* Cardify.swift in Sources */,
 				3F71059725151DF700895130 /* Array+Identifiable.swift in Sources */,
-				3F1FE802251FA3C0008C20E9 /* AnimationCompletionObserverModifier.swift in Sources */,
 				3F2BDA012514409900DCA0D9 /* SetGame.swift in Sources */,
+				3F1FE81325223784008C20E9 /* Card.swift in Sources */,
 				3F2BDA13251478D100DCA0D9 /* CardView.swift in Sources */,
 				3F2BDA0F2514784500DCA0D9 /* Symbol+Extension.swift in Sources */,
 				3F768A15251D22A5003DA5B2 /* SoundPlayer.swift in Sources */,

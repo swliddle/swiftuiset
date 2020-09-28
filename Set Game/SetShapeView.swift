@@ -20,7 +20,7 @@ struct SetShapeView: View {
     }
 
     private func setShapeBody(for size: CGSize) -> some View {
-        let shapeType = SymbolShape.capsule
+        let shapeType = Card.SymbolShape.capsule
 
         return HStack(spacing: spacing(for: size)) {
             ForEach(0..<count) { _ in

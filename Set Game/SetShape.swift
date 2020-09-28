@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct SetShape: Shape {
-    var shapeType: SymbolShape
+    var shapeType: Card.SymbolShape
 
     func path(in rect: CGRect) -> Path {
         switch shapeType {

@@ -54,7 +54,15 @@ struct SoundPlayer {
 
             if let path = Bundle.main.path(forResource: soundName, ofType: nil) {
                 do {
-                    players[soundName] = try AVAudioPlayer(contentsOf: URL(fileURLWithPath: path))
+                    let player = try AVAudioPlayer(contentsOf: URL(fileURLWithPath: path))
+
+                    players[soundName] = player
+
+                    if soundEffect == .replace3 {
+                        player.enableRate = true
+                        player.prepareToPlay()
+                        player.rate = 2.8
+                    }
                 } catch {
                     print("Unable to load sound \(soundName)")
                 }

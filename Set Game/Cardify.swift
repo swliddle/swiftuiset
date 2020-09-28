@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct Cardify: ViewModifier {
-    var selectionState: SelectionState
+    var selectionState: Card.SelectionState
 
     func body(content: Content) -> some View {
         GeometryReader { geometry in
@@ -31,7 +31,7 @@ struct Cardify: ViewModifier {
         size.width * 0.05
     }
 
-    private func fillColor(for state: SelectionState) -> Color {
+    private func fillColor(for state: Card.SelectionState) -> Color {
         switch state {
         case .selected:
             return Color.yellow
@@ -49,7 +49,7 @@ struct Cardify: ViewModifier {
 
 struct Cardify_Previews: PreviewProvider {
     static var previews: some View {
-        let card = SetGame.Card(shape: .squiggle, pattern: .striped, color: .purple, count: 3, id: 1)
+        let card = Card(shape: .squiggle, pattern: .striped, color: .purple, count: 3, id: 1)
 
         return CardView(card: card)
             .foregroundColor(.black)
@@ -58,7 +58,7 @@ struct Cardify_Previews: PreviewProvider {
 }
 
 extension View {
-    func cardify(selectionState: SelectionState) -> some View {
+    func cardify(selectionState: Card.SelectionState) -> some View {
         modifier(Cardify(selectionState: selectionState))
     }
 }

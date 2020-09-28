@@ -9,7 +9,10 @@ import SwiftUI
 
 class SetGameViewModel: ObservableObject {
     struct Constant {
+        static let animationDuration = 0.4
         static let cardsPerDeal = 3
+        static let dealingAnimationDuration = 0.33
+        static let initialDeckSize = 12
         static let keyHighScore = "highscore"
     }
 
@@ -61,14 +64,18 @@ class SetGameViewModel: ObservableObject {
         game.setCount
     }
 
-    var visibleCards: [SetGame.Card] {
+    var visibleCards: [Card] {
         game.visibleCards
     }
 
     // MARK: - Intents
 
-    func choose(_ card: SetGame.Card) {
-        withAnimation(.easeInOut(duration: animationDuration)) {
+    func choose(_ card: Card) {
+        if game.isMarkedSetVisible {
+            SoundPlayer.play(.replace3)
+        }
+
+        withAnimation(.easeInOut(duration: Constant.animationDuration)) {
             game.choose(card)
         }
 
@@ -98,22 +105,22 @@ class SetGameViewModel: ObservableObject {
     }
 
     func dealCards(quantity: Int, with delayCount: Int = 0) {
-        if visibleCards.count >= initialDeckSize && isSetAvailable {
+        if visibleCards.count >= Constant.initialDeckSize && isSetAvailable {
             game.assessDealPenalty()
         }
 
         for i in 0..<quantity {
             withAnimation(
                 Animation.easeInOut(
-                    duration: animationDuration
+                    duration: Constant.animationDuration
                 )
-                .delay(Double(i + delayCount) * dealingAnimationDuration)
+                .delay(Double(i + delayCount) * Constant.dealingAnimationDuration)
             ) {
                 game.dealOneCard()
             }
         }
 
-        if quantity >= initialDeckSize {
+        if quantity >= Constant.initialDeckSize {
             SoundPlayer.play(.deal12)
         } else if quantity >= 3 {
             SoundPlayer.play(.deal3)
@@ -125,12 +132,12 @@ class SetGameViewModel: ObservableObject {
             game = SetGame()
         }
 
-        dealCards(quantity: initialDeckSize)
-        dealCardsToAllowSet(delayCount: initialDeckSize)
+        dealCards(quantity: Constant.initialDeckSize)
+        dealCardsToAllowSet(delayCount: Constant.initialDeckSize)
     }
 
     func showHint() {
-        let matchedIndices = visibleCards.indices.filter { visibleCards[$0].selectionState == .matched }
+        let matchedIndices = visibleCards.indicesMatching(selectionState: .matched)
 
         if matchedIndices.count > 0 {
             withAnimation {
@@ -142,7 +149,7 @@ class SetGameViewModel: ObservableObject {
 
         if let availableSet = firstAvailableSet(),
            let randomIndex = availableSet.randomElement() {
-            withAnimation(.easeIn(duration: animationDuration)) {
+            withAnimation(.easeIn(duration: Constant.animationDuration)) {
                 game.markHint(indices: [randomIndex])
             }
         }
@@ -156,7 +163,7 @@ class SetGameViewModel: ObservableObject {
         game.stopTimer()
     }
 
-    // MARK: - Helpers
+    // MARK: - Private helpers
 
     private func dealCardsToAllowSet(delayCount: Int = 0) {
         while !isSetAvailable && hiddenCardCount > 0 {
@@ -177,7 +184,7 @@ class SetGameViewModel: ObservableObject {
             for j in cards.indices {
                 if j != i {
                     for k in cards.indices {
-                        if k != i && k != j && game.isASet(indices: [i, j, k]) {
+                        if k != i && k != j && game.isValidSet(indices: [i, j, k]) {
                             return [i, j, k]
                         }
                     }
@@ -187,10 +194,4 @@ class SetGameViewModel: ObservableObject {
 
         return nil
     }
-
-    // MARK: - Constants
-
-    private let animationDuration = 0.4
-    private let dealingAnimationDuration = 0.33
-    private let initialDeckSize = 12
 }
