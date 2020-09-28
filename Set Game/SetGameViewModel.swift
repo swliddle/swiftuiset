@@ -71,7 +71,7 @@ class SetGameViewModel: ObservableObject {
     // MARK: - Intents
 
     func choose(_ card: Card) {
-        if game.isMarkedSetVisible {
+        if game.isMarkedSetVisible && hiddenCardCount > 0 {
             SoundPlayer.play(.replace3)
         }
 
