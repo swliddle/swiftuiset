@@ -65,6 +65,11 @@ struct SetGameView: View {
         var spacingWidth: CGFloat
         var width: CGFloat
         var rows: Int
+        var count = setGame.visibleCards.count
+
+        if count < SetGameViewModel.Constant.initialDeckSize {
+            count = SetGameViewModel.Constant.initialDeckSize
+        }
 
         repeat {
             // Starting with a minimum of 3 columns, see how many
@@ -73,7 +78,7 @@ struct SetGameView: View {
             columns += 1
             spacingWidth = CGFloat((columns - 1) * 5)
             width = (size.width - spacingWidth) / CGFloat(columns)
-            rows = (setGame.visibleCards.count + columns - 1) / columns
+            rows = (count + columns - 1) / columns
         } while heightRequired(for: rows, of: width) > size.height
 
         return columns
